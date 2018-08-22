@@ -1,8 +1,9 @@
 /* @flow */
-import { findAll } from 'highlight-words-core'
-import PropTypes from 'prop-types'
-import React from 'react'
-import memoizeOne from 'memoize-one'
+import { findAll } from 'highlight-words-core';
+import PropTypes from 'prop-types';
+import React from 'react';
+import memoizeOne from 'memoize-one';
+import { Text } from 'react-native';
 
 Highlighter.propTypes = {
   activeClassName: PropTypes.string,
@@ -11,28 +12,21 @@ Highlighter.propTypes = {
   autoEscape: PropTypes.bool,
   className: PropTypes.string,
   findChunks: PropTypes.func,
-  highlightClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string
-  ]),
+  highlightClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   highlightStyle: PropTypes.object,
-  highlightTag: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.func,
-    PropTypes.string
-  ]),
+  highlightTag: PropTypes.oneOfType([PropTypes.node, PropTypes.func, PropTypes.string]),
   sanitize: PropTypes.func,
   searchWords: PropTypes.arrayOf(PropTypes.string).isRequired,
   textToHighlight: PropTypes.string.isRequired,
   unhighlightClassName: PropTypes.string,
   unhighlightStyle: PropTypes.object
-}
+};
 
 /**
  * Highlights all occurrences of search terms (searchText) within a string (textToHighlight).
  * This function returns an array of strings and <span>s (wrapping highlighted words).
  */
-export default function Highlighter ({
+export default function Highlighter({
   activeClassName = '',
   activeIndex = -1,
   activeStyle,
@@ -56,67 +50,62 @@ export default function Highlighter ({
     sanitize,
     searchWords,
     textToHighlight
-  })
+  });
   // const HighlightTag = highlightTag
-  let highlightCount = -1
-  let highlightClassNames = ''
-  let highlightStyles
+  let highlightCount = -1;
+  let highlightClassNames = '';
+  let highlightStyles;
 
   const lowercaseProps = object => {
-    const mapped = {}
+    const mapped = {};
     for (let key in object) {
-      mapped[key.toLowerCase()] = object[key]
+      mapped[key.toLowerCase()] = object[key];
     }
-    return mapped
-  }
-  const memoizedLowercaseProps = memoizeOne(lowercaseProps)
+    return mapped;
+  };
+  const memoizedLowercaseProps = memoizeOne(lowercaseProps);
 
   return (
     <Text>
       {chunks.map((chunk, index) => {
-        const text = textToHighlight.substr(chunk.start, chunk.end - chunk.start)
+        const text = textToHighlight.substr(chunk.start, chunk.end - chunk.start);
 
         if (chunk.highlight) {
-          highlightCount++
+          highlightCount++;
 
-          let highlightClass
+          let highlightClass;
           if (typeof highlightClassName === 'object') {
             if (!caseSensitive) {
-              highlightClassName = memoizedLowercaseProps(highlightClassName)
-              highlightClass = highlightClassName[text.toLowerCase()]
+              highlightClassName = memoizedLowercaseProps(highlightClassName);
+              highlightClass = highlightClassName[text.toLowerCase()];
             } else {
-              highlightClass = highlightClassName[text]
+              highlightClass = highlightClassName[text];
             }
           } else {
-            highlightClass = highlightClassName
+            highlightClass = highlightClassName;
           }
 
-          const isActive = highlightCount === +activeIndex
+          const isActive = highlightCount === +activeIndex;
 
-          highlightClassNames = `${highlightClass} ${isActive ? activeClassName : ''}`
-          highlightStyles = isActive === true && activeStyle != null
-            ? Object.assign({}, highlightStyle, activeStyle)
-            : highlightStyle
+          highlightClassNames = `${highlightClass} ${isActive ? activeClassName : ''}`;
+          highlightStyles =
+            isActive === true && activeStyle != null
+              ? Object.assign({}, highlightStyle, activeStyle)
+              : highlightStyle;
 
           return (
-            <Text
-              key={index}
-              style={highlightStyles}
-            >
+            <Text key={index} style={highlightStyles}>
               {text}
             </Text>
-          )
+          );
         } else {
           return (
-            <Text
-              key={index}
-              style={unhighlightStyle}
-            >
+            <Text key={index} style={unhighlightStyle}>
               {text}
             </Text>
-          )
+          );
         }
       })}
     </Text>
-  )
+  );
 }
