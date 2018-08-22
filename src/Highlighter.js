@@ -42,7 +42,7 @@ export default function Highlighter ({
   findChunks,
   highlightClassName = '',
   highlightStyle = {},
-  highlightTag = 'mark',
+  // highlightTag = 'mark',
   sanitize,
   searchWords,
   textToHighlight,
@@ -57,7 +57,7 @@ export default function Highlighter ({
     searchWords,
     textToHighlight
   })
-  const HighlightTag = highlightTag
+  // const HighlightTag = highlightTag
   let highlightCount = -1
   let highlightClassNames = ''
   let highlightStyles
@@ -72,7 +72,7 @@ export default function Highlighter ({
   const memoizedLowercaseProps = memoizeOne(lowercaseProps)
 
   return (
-    <span className={className}>
+    <Text>
       {chunks.map((chunk, index) => {
         const text = textToHighlight.substr(chunk.start, chunk.end - chunk.start)
 
@@ -99,26 +99,24 @@ export default function Highlighter ({
             : highlightStyle
 
           return (
-            <HighlightTag
-              className={highlightClassNames}
+            <Text
               key={index}
               style={highlightStyles}
             >
               {text}
-            </HighlightTag>
+            </Text>
           )
         } else {
           return (
-            <span
-              className={unhighlightClassName}
+            <Text
               key={index}
               style={unhighlightStyle}
             >
               {text}
-            </span>
+            </Text>
           )
         }
       })}
-    </span>
+    </Text>
   )
 }
